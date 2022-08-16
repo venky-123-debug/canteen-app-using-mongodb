@@ -1,0 +1,40 @@
+<div class="container">
+  <h1 class="jumbotron-heading">NodeJS Canteen</h1>
+  <div class="container">
+    <div class="display-3 text-center pt-3 pb-5">Dashboard</div>
+    <div class="card mb-3">
+      <div class="card-header display-4"><strong></strong> Dish</div>
+      <div class="card-body">
+        <form action="/profile-upload-single" method="POST" enctype="multipart/form-data">
+          <div class="form-group">
+            <label>Title:</label>
+            <input type="text" class="form-control" name="title">
+          </div>
+          <div class="custom-file mb-3">
+            <input type="file" class="custom-file-input" id="customFile" name="filename">
+            <label class="custom-file-label" for="customFile">Choose file</label>
+          </div>
+          <div class="btn-group float-right mb-3">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="reset" class="btn btn-danger">clear</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+  {{#each orders}}
+  <div class="container">
+    <div class="card">
+      <div class="card-header">friedrice</div>
+      <div class="card-body">
+        <img class="card-img-top" src="src/my-images/f74dee7290329ef4c0d10aa1ae685c41.jpg" alt="Card image">
+        {{!-- <a href="#" class="btn btn-primary">See Profile</a> --}}
+      </div>
+      <div class="card-footer">
+        <a href="delete-order?id={{this._id}}" class="btn btn-danger float-right">Delete</a>
+      </div>
+    </div>
+  </div>
+  {{/each}}
+</div>
