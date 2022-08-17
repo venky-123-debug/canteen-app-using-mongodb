@@ -1,17 +1,17 @@
 <div class="container">
   {{!-- <h1 class="jumbotron-heading text-center">NodeJS Canteen</h1> --}}
-  <div class="container">
-    <div class="display-4 text-center pt-3 pb-5">Dashboard</div>
+  <div class="container bg-importtant">
+    <div class="display-4 text-center text-dark pt-3 pb-5">Dashboard</div>
     <div class="card mb-3">
       <div class="card-header display-4"><strong>Add Dish</strong> </div>
       <div class="card-body">
         <form action="create-order" method="post" enctype="multipart/form-data">
           <div class="form-group">
-            <label><strong> Dish </strong> </label>
+            <label><strong> Dish Name </strong> </label>
             <input type="text" class="form-control" name="title">
           </div>
           <div class="form-group">
-            <label>Description:</label>
+            <label><strong>Description</strong></label>
             <input type="text" class="form-control" name="description">
           </div>
           <div class="form-group">
@@ -28,60 +28,57 @@
     </div>
   </div>
   {{#each orders}}
-  <div class="card mb-6">
-    <div class="card-header"><strong>{{this.title}}</strong></div>
-    <p>{{this.description}}</p>
-    <div class="card-body ">
-      <img src={{ this.image }} width=" 300" height="300">
-      {{!-- <img class="card-img-top" src="/home/venkatesh/Desktop/canteen/uploads" alt="Card image"> --}}
-      {{!-- <a href="#" class="btn btn-primary">See Profile</a> --}}
+  <div class="card mb-6 text-center text-white bg-dark mb-3 float-center">
+    <div class="card-header ">
+      <h1><strong>{{this.title}}</strong></h1>
     </div>
-    {{!-- <div class="btn-group float-left">
-      <a href="update-order?id={{this._id}}&status=available" class="btn btn-warning">{{this.available}}</a>
-      <a href="update-order?id={{this._id}}&status=served" class="btn btn-primary">{{this.served}}</a>
-      <a href="update-order?id={{this._id}}&status=total" class="btn btn-success">{{this.total}}</a>
-    </div> --}}
-    <div class="container">
-      <div class="row">
-        <div class="col-8">
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th scope="col">Status</th>
-                <th scope="col">Count</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Available</td>
-                <td>
-                  <a href="update-order?id={{this._id}}&status=available" class="btn btn-warning">{{this.available}}</a>
-                  {{!-- <button type="button" class="btn btn-warning"> {{this.available}} </button> --}}
-                </td>
-              </tr>
-              <tr>
-                <td>Served</td>
+    <p><strong>{{this.description}}</strong></p>
+    <div class="card-body text-white bg-white">
+      <img src={{ this.image }} width=" 300" height="300">
+    </div>
+    <div class="container bg-white text-center py-4 justify-content-center">
+        <div class=" row ">
+          <div class=" col-8 text-white">
+      <div class="table-responsive">
+        <table class="table table-hover table-condensed text-center " style="display:table">
+          <thead>
+            <tr>
+              <th scope="col">Status</th>
+              <th scope="col">Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Available</td>
+              <td>
+                <a href="update-order?id={{this._id}}&status=available" class="btn btn-warning">{{this.available}}</a>
+                {{!-- <button type="button" class="btn btn-warning"> {{this.available}} </button> --}}
+              </td>
+            </tr>
+            <tr>
+              <td>Served</td>
 
-                <td>
-                  <a href="update-order?id={{this._id}}&status=served" class="btn btn-primary">{{this.served}}</a>
-                  {{!-- <button type="button" class="btn btn-primary"> {{this.served}} </button> --}}
-                </td>
-              </tr>
-              <tr>
-                <td>Total</td>
-                <td>
-                  <a href="update-order?id={{this._id}}&status=total" class="btn btn-success">{{this.total}}</a>
-                  {{!-- <button type="button" class="btn btn-success"> {{this.total}} </button> --}}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+              <td>
+                <a href="update-order?id={{this._id}}&status=served" class="btn btn-primary">{{this.served}}</a>
+                {{!-- <button type="button" class="btn btn-primary"> {{this.served}} </button> --}}
+              </td>
+            </tr>
+            <tr>
+              <td>Total</td>
+              <td>
+                <a href="update-order?id={{this._id}}&status=total" class="btn btn-success">{{this.total}}</a>
+                {{!-- <button type="button" class="btn btn-success"> {{this.total}} </button> --}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
-    <div class="card-footer">
-      <a href="delete-order?id={{this._id}}" class="btn btn-danger float-right">Delete</a>
-    </div>
   </div>
-  {{/each}}
+</div>
+<div class="card-footer bg-dark">
+  <a href="delete-order?id={{this._id}}" class="btn btn-danger float-right">Delete</a>
+</div>
+</div>
+{{/each}}
 </div>

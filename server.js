@@ -53,29 +53,29 @@ app.post('/create-order', upload.single('Image'), async (req, res, next) => {
 
 //update
 app.get('/update-order', async (req, res) => {
-   console.log(req.query.update) // add or sub dishes
+  console.log(req.query.update) // add or sub dishes
   let order = await Order.findById(req.query.id).lean()
   console.log(order)  // let total= available +  served
 
   // for add a dish to the dashboard
   if (req.query.update == "add") {
     await Order.findByIdAndUpdate(req.query.id, {
-      available: order.available+1,
-      total: order.total+1
+      available: order.available + 1,
+      total: order.total + 1
     })
   }
   //for substract a dish after surving
   if (req.query.update == "sub") {
-    if(order.available) {
+    if (order.available) {
       await Order.findByIdAndUpdate(
         req.query.id, {
-          $inc: {
-            available: -1, served: 1
-          }
+        $inc: {
+          available: -1, served: 1
         }
+      }
       )
     }
-     
+
   }
   res.redirect('/')
 })
