@@ -1,36 +1,33 @@
-const express = require('express')
-const mongoose = require('mongoose')
-const exphbs = require('express-handlebars')
-const path = require('path')
-const multer = require('multer')
+// importing modules
+
+const express = require('express') // express app
+const mongoose = require('mongoose') // for database
+const exphbs = require('express-handlebars') //templte engine
+const path = require('path') //to handle file paths
+const multer = require('multer') //to upload image file
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const sharp = require("sharp")
 const fs = require("fs")
-require('dotenv').config()
+require('dotenv').config() //
 
-
+//consuming order schema from database
 const { Order } = require("./models/order")
-// const { OrderedBulkOperation } = require('mongodb')
 
+
+//uploading images using multer
 const upload = multer({ dest: "./uploads" })
 
-// File upload folder
-// const DIR = './uploads/';
-// const storage = multer.memoryStorage()
-// const upload = multer({ storage: storage })
-
-//init app
+//initialising express app
 const app = express()
 
-// app.use(express.static('/public'));
+//static files
 app.use(express.static('./uploads'));
-// app.use('/uploads', express.static('uploads'));
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 app.use(morgan('dev'))
 
-
+//setting handlebas engine
 app.engine('handlebars', exphbs.engine({
   extname: 'handlebars',
   defaultLayout: 'main',
@@ -41,7 +38,7 @@ app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'handlebars')
 
 
-
+//create order
 app.post('/create-order', upload.single('Image'), async (req, res, next) => {
   console.log(req.file)
   if (!req.file) {
@@ -49,28 +46,37 @@ app.post('/create-order', upload.single('Image'), async (req, res, next) => {
       success: "nofile uploaded"
     })
   }
-  // if (req.file.mimetype == "image/jpeg" || req.file.mimetype == "image/png") {
-  //   res.redirect('/')
-  // // } else {
-  // //   res.render("index", {
-  //     success: "upload only image file"
-  //   })
-  // app.post('/create-order', async (req, res) => {
   console.log("Body: ", req.body)
   await new Order({ ...req.body, image: req.file.filename }).save()
   res.redirect('/')
 })
 
-
-
+//update
 app.get('/update-order', async (req, res) => {
-  console.log(req.query)
-  await Order.findByIdAndUpdate(req.query.id, {
-    status: req.query.status,
-    $inc:{
-      total: 1,served: 0, available:1
+   console.log(req.query.update) // add or sub dishes
+  let order = await Order.findById(req.query.id).lean()
+  console.log(order)  // let total= available +  served
+
+  // for add a dish to the dashboard
+  if (req.query.update == "add") {
+    await Order.findByIdAndUpdate(req.query.id, {
+      available: order.available+1,
+      total: order.total+1
+    })
+  }
+  //for substract a dish after surving
+  if (req.query.update == "sub") {
+    if(order.available) {
+      await Order.findByIdAndUpdate(
+        req.query.id, {
+          $inc: {
+            available: -1, served: 1
           }
-  })
+        }
+      )
+    }
+     
+  }
   res.redirect('/')
 })
 
@@ -80,83 +86,17 @@ app.get('/delete-order', async (req, res) => {
   res.redirect("/")
 })
 
-
+//home page rendering
 app.get('/', async (req, res) => {
   // await Order.deleteMany()
   let orders = await Order.find().lean()
-  await Order.findByIdAndUpdate(req.query.id,{
-    $inc:{
-total: 1, available:-1,
-    }, $max: {served: -1}
-  
-  })
-  // console.log(orders)
-  // let orders = [{
-  //   title: "Dish 1",
-  //   description: "Hot spicy rice dish",
-  //   available: 5,
-  //   served: 2,
-  //   total: 7,
-  //   image: "dish1",
-  // }]
+  await Order.findByIdAndUpdate(req.query.id)
   res.render('home', {
     title: "NodeJS Canteen",
     orders,
-    helpers: {
-      count(value) {
-        if(value=="available")
-          return "text-primary"       
-        if(value=="served")
-          return "text-warning"
-         if(value=="total")
-          return "text-success"      
-      }
-    //   function(a, b, opts) {
-    //     if (a == b) {
-    //         return opts.fn(this);
-    //     } else {
-    //         return opts.inverse(this);
-    //     }
-    // }
-    }
-    // helpers: {
-    //   calculation: function (value) {
-    //     return value * 5
-    //   },
-
-    //   list: function (value, options) {
-    //     let out = "<ul>";
-    //     for (let i = 0; i < value.length; i++) {
-    //       out = out + "<li>" + options.fn(value[i]) + "</li>";
-    //     }
-    //     return out + "</ul>";
-    //   }
-    // }
   })
 })
-
-// app.post('/upload', (req, res) => {
-//   upload(req, res, (err) => {
-//     if(err){
-//       res.render('index', {
-//         msg: err
-//       });
-//     } else {
-//       if(req.file == undefined){
-//         res.render('index', {
-//           msg: 'Error: No File Selected!'
-//         });
-//       } else {
-//         res.render('index', {
-//           msg: 'File Uploaded!',
-//           file: `uploads/${req.file.filename}`
-//         });
-//       }
-//     }
-//   });
-// });
-
-
+//server
 async function start() {
   try {
     // conditions

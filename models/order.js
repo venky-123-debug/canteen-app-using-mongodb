@@ -2,9 +2,9 @@ const mongoose = require("mongoose")
 
 const orderSchema = new mongoose.Schema({
   title: { type: String , default: " order name..."},
-  available: Number,
-  served: Number,
-  total: Number ,
+  available: { type: Number, default: 0 },
+  served: { type: Number, default: 0 },
+  total: { type: Number, default: 0 } ,
   description: { type: String, default: "This order is about..." },
   status: { type: String , default : "available"},
   image: { type: String , default : "dish1"},
